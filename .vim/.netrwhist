@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/usr/local/var/rbenv/versions/1.9.3-p545/lib/ruby/gems/1.9.1/gems/puppet-3.5.1'
-let g:netrw_dirhist_2='/Users/morgan/work/puppet-tomcat/manifests/install'
-let g:netrw_dirhist_3='/Users/morgan/work/new/puppetlabs-tomcat/manifests/config/server'
