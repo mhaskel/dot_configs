@@ -403,7 +403,8 @@ function listvm() { curl -s --url http://vcloud.delivery.puppetlabs.net/vm/ ; }
 function getvm() { curl -d --url http://vcloud.delivery.puppetlabs.net/vm/$1 ; }
 function sshvm() { ssh -i ~/.ssh/id_rsa-acceptance root@$1 ; }
 function rmvm() { curl -X DELETE --url http://vcloud.delivery.puppetlabs.net/vm/$1 ; }
-function git() { if [[ $1 == 'fetch' ]]; then echo "Stop trying to make fetch happen, $USER"; /usr/bin/git $@; else /usr/bin/git $@; fi }
+function git() { if [[ $1 == 'fetch' ]]; then echo "Stop trying to make fetch happen, $USER"; /usr/local/bin/git $@; else /usr/local/bin/git $@; fi }
+function changelog() { git log $1..$2 --no-merges --pretty=format:"%h: %s -- %an" | tee /dev/null }
 
 # tmux aliases
 alias tl="tmux ls"
@@ -428,4 +429,10 @@ alias gu="git pull"
 alias gdw="git diff --color-words"
 alias gk="gitk --all&"
 alias gx="gitx --all"
-
+#ruby aliases
+alias be="bundle exec"
+alias bi="bundle install"
+alias bu="bundle update"
+# old habits
+alias grep="ag"
+alias cl="changelog"

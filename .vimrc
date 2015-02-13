@@ -122,6 +122,9 @@ nmap <F8> :TagbarToggle<CR>
 nmap \p :set paste!<CR>
 nmap ; :CtrlPBuffer<CR>
 
+noremap <Leader>pry orequire'pry';binding.pry<Esc>
+noremap <Leader>PRY Orequire'pry';binding.pry<Esc>
+
 if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
   set t_Co=256
 endif
