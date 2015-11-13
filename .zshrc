@@ -397,6 +397,7 @@ unsetopt rm_star_silent
 unsetopt RM_STAR_SILENT
 
 export RBENV_ROOT=/usr/local/var/rbenv
+export TEAM=release
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 function listvm() { curl -s --url http://vcloud.delivery.puppetlabs.net/vm/ ; }
@@ -405,6 +406,22 @@ function sshvm() { ssh -i ~/.ssh/id_rsa-acceptance root@$1 ; }
 function rmvm() { curl -X DELETE --url http://vcloud.delivery.puppetlabs.net/vm/$1 ; }
 function git() { if [[ $1 == 'fetch' ]]; then echo "Stop trying to make fetch happen, $USER"; /usr/local/bin/git $@; else /usr/local/bin/git $@; fi }
 function changelog() { git log $1..$2 --no-merges --pretty=format:"%h: %s -- %an" | tee /dev/null }
+
+function deb_compare() {
+  comm -3 <(dpkg --contents ${1} | awk '{print $6}' | sort) <(dpkg --contents ${2} | awk '{print $6}' | sort)
+}
+
+function rpm_compare() {
+  comm -3 <(rpm -qpl ${1} | sort) <(rpm -qpl ${2} | sort)
+}
+
+function git_grep_all() {
+  for branch in `git branch -rl | grep ${1}`; do git --no-pager grep ${2} ${branch}; done
+}
+
+function git_upstream_grep() {
+  git_grep_all upstream ${1}
+}
 
 # tmux aliases
 alias tl="tmux ls"
@@ -436,3 +453,5 @@ alias bu="bundle update"
 # old habits
 alias grep="ag"
 alias cl="changelog"
+alias pkgreset='rake package:implode package:bootstrap'
+alias ggrep='git_upstream_grep'
