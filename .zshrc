@@ -401,7 +401,7 @@ export TEAM=release
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 function listvm() { curl -s --url http://vcloud.delivery.puppetlabs.net/vm/ ; }
-function getvm() { curl -d --url http://vcloud.delivery.puppetlabs.net/vm/$1 ; }
+function getvm() { echo "curl -X POST -d '{ \"$1\":\"1\" }' -H X-AUTH-TOKEN:adldi70bnaikmq3z1yt3v2e8claaicnh --url http://vcloud.delivery.puppetlabs.net/vm" ; }
 function sshvm() { ssh -i ~/.ssh/id_rsa-acceptance root@$1 ; }
 function rmvm() { curl -X DELETE --url http://vcloud.delivery.puppetlabs.net/vm/$1 ; }
 function git() { if [[ $1 == 'fetch' ]]; then echo "Stop trying to make fetch happen, $USER"; /usr/local/bin/git $@; else /usr/local/bin/git $@; fi }
@@ -422,6 +422,8 @@ function git_grep_all() {
 function git_upstream_grep() {
   git_grep_all upstream ${1}
 }
+
+function signed_tag () { git tag -s -u 4BD6EC30 -m "$@" "$@" ;}
 
 # tmux aliases
 alias tl="tmux ls"
@@ -455,3 +457,29 @@ alias grep="ag"
 alias cl="changelog"
 alias pkgreset='rake package:implode package:bootstrap'
 alias ggrep='git_upstream_grep'
+alias stag='signed_tag'
+alias clone_upstream='git clone -o upstream'
+alias rpmbuilder='ssh rpm-builder-5'
+alias debbuilder='ssh deb-builder-3'
+
+#building
+export VANAGON_SSH_KEY=~/.ssh/id_rsa-acceptance
+
+#sol11 signing
+export IPS_SIGNING_KEY="/root/signing/signing_key.pem"
+export IPS_SIGNING_CERT="/root/signing/signing_cert.pem"
+export IPS_ROOT_CERT="/root/signing/Thawte_Primary_Root_CA.pem"
+export IPS_INTER_CERT="/root/signing/Thawte_Code_Signing_Certificate.pem"
+export IPS_SIGNING_SERVER="rama.delivery.puppetlabs.net"
+export IPS_SIGNING_SSH_KEY='/Users/morgan/.ssh/id_rsa'
+
+export VMPOOLER_TOKEN="adldi70bnaikmq3z1yt3v2e8claaicnh"
+export VMPOOLER_URL="http://vcloud.delivery.puppetlabs.net"
+
+
+export PYENV_ROOT=/usr/local/var/pyenv
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+
+source /Users/morgan/work/vmpooler-shell/vmpooler.sh > /dev/null 2>&1
+# added by travis gem
+[ -f /Users/morgan/.travis/travis.sh ] && source /Users/morgan/.travis/travis.sh
