@@ -400,10 +400,6 @@ export RBENV_ROOT=/usr/local/var/rbenv
 export TEAM=release
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
-function listvm() { curl -s --url http://vcloud.delivery.puppetlabs.net/vm/ ; }
-function getvm() { echo "curl -X POST -d '{ \"$1\":\"1\" }' -H X-AUTH-TOKEN:adldi70bnaikmq3z1yt3v2e8claaicnh --url http://vcloud.delivery.puppetlabs.net/vm" ; }
-function sshvm() { ssh -i ~/.ssh/id_rsa-acceptance root@$1 ; }
-function rmvm() { curl -X DELETE --url http://vcloud.delivery.puppetlabs.net/vm/$1 ; }
 function git() { if [[ $1 == 'fetch' ]]; then echo "Stop trying to make fetch happen, $USER"; /usr/local/bin/git $@; else /usr/local/bin/git $@; fi }
 function changelog() { git log $1..$2 --no-merges --pretty=format:"%h: %s -- %an" | tee /dev/null }
 
@@ -416,7 +412,7 @@ function rpm_compare() {
 }
 
 function git_grep_all() {
-  for branch in `git branch -rl | grep ${1}`; do git --no-pager grep ${2} ${branch}; done
+  for branch in `git branch -rl | ag ${1}`; do git --no-pager grep ${2} ${branch}; done
 }
 
 function git_upstream_grep() {
@@ -424,6 +420,8 @@ function git_upstream_grep() {
 }
 
 function signed_tag () { git tag -s -u 4BD6EC30 -m "$@" "$@" ;}
+
+function unlock_timemachine() { diskutil coreStorage unlockVolume "$@" }
 
 # tmux aliases
 alias tl="tmux ls"
@@ -433,7 +431,7 @@ alias tn="tmux new -s"
 alias gs="git status"
 alias gl="git lg"
 alias gla="git lg --all"
-alias go="git checkout"
+#alias go="git checkout"
 alias gob="git checkout -b"
 alias gb="git branch"
 alias ga="git add"
@@ -461,6 +459,9 @@ alias stag='signed_tag'
 alias clone_upstream='git clone -o upstream'
 alias rpmbuilder='ssh rpm-builder-5'
 alias debbuilder='ssh deb-builder-3'
+alias fla='floaty list --active'
+alias fd='floaty delete'
+alias test_lein='EZBAKE_ALLOW_UNREPRODUCIBLE_BUILDS=true EZBAKE_NODEPLOY=true lein'
 
 #building
 export VANAGON_SSH_KEY=~/.ssh/id_rsa-acceptance
@@ -473,8 +474,7 @@ export IPS_INTER_CERT="/root/signing/Thawte_Code_Signing_Certificate.pem"
 export IPS_SIGNING_SERVER="rama.delivery.puppetlabs.net"
 export IPS_SIGNING_SSH_KEY='/Users/morgan/.ssh/id_rsa'
 
-export VMPOOLER_TOKEN="adldi70bnaikmq3z1yt3v2e8claaicnh"
-export VMPOOLER_URL="http://vcloud.delivery.puppetlabs.net"
+export VMPOOLER_URL="http://vmpooler.delivery.puppetlabs.net"
 
 
 export PYENV_ROOT=/usr/local/var/pyenv
@@ -483,3 +483,23 @@ if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 source /Users/morgan/work/vmpooler-shell/vmpooler.sh > /dev/null 2>&1
 # added by travis gem
 [ -f /Users/morgan/.travis/travis.sh ] && source /Users/morgan/.travis/travis.sh
+alias fingerprint='echo 6F6B15509CF8E59E6E469F327F438280EF8D349F'
+alias debdate="date '+%a, %d %b %Y %H:%M:%S %z'"
+alias diff="diff -u"
+alias ez_stage="EZBAKE_ALLOW_UNREPRODUCIBLE_BUILDS=true EZBAKE_NODEPLOY=true lein with-profile ezbake ezbake stage"
+
+alias find_disk_uuid="diskutil cs list"
+alias find_timemachine=find_disk_uuid
+alias java7="export JAVA_HOME=`/usr/libexec/java_home -v 1.7`"
+alias java8="export JAVA_HOME=`/usr/libexec/java_home -v 1.8`"
+alias ez_foss_build="EZBAKE_ALLOW_UNREPRODUCIBLE_BUILDS=true EZBAKE_NODEPLOY=true JENKINS_USER_AUTH=\$JENKINS_USER_AUTH_FOSS lein with-profile ezbake ezbake build"
+
+source ~/.sensitive_data
+
+export PATH=$PATH:$(go env GOPATH)/bin
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/morgan/work/releng/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/morgan/work/releng/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/morgan/work/releng/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/morgan/work/releng/google-cloud-sdk/completion.zsh.inc'; fi
