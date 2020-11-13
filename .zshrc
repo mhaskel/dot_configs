@@ -396,8 +396,9 @@ esac
 unsetopt rm_star_silent
 unsetopt RM_STAR_SILENT
 
-export RBENV_ROOT=/usr/local/var/rbenv
 export TEAM=release
+
+export RBENV_ROOT=/usr/local/var/rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 function git() { if [[ $1 == 'fetch' ]]; then echo "Stop trying to make fetch happen, $USER"; /usr/local/bin/git $@; else /usr/local/bin/git $@; fi }
@@ -451,7 +452,7 @@ alias be="bundle exec"
 alias bi="bundle install"
 alias bu="bundle update"
 # old habits
-alias grep="ag"
+alias grep="grep -r"
 alias cl="changelog"
 alias pkgreset='rake package:implode package:bootstrap'
 alias ggrep='git_upstream_grep'
@@ -460,15 +461,27 @@ alias clone_upstream='git clone -o upstream'
 alias rpmbuilder='ssh rpm-builder-5'
 alias debbuilder='ssh deb-builder-3'
 alias fla='floaty list --active'
+alias fla='floaty list --active --service vmpooler'
 alias fd='floaty delete'
+alias fda='floaty delete --all'
+alias fdav='floaty delete --all --service vmpooler'
+alias fssh='ssh -i ~/.ssh/id_rsa-acceptance -l root'
 alias test_lein='EZBAKE_ALLOW_UNREPRODUCIBLE_BUILDS=true EZBAKE_NODEPLOY=true lein'
+alias docker_run_bash='docker run --rm -it --entrypoint /bin/bash'
+alias docker_run_ash='docker run --rm -it --entrypoint /bin/ash'
+alias docker_run_sh='docker run --rm -it --entrypoint /bin/sh'
+alias docker_run='docker run --rm -it'
+alias dr=docker_run
+alias drb=docker_run_bash
+alias dra=docker_run_ash
+alias drs=docker_run_sh
 
 #building
 export VANAGON_SSH_KEY=~/.ssh/id_rsa-acceptance
 
 #sol11 signing
-export IPS_SIGNING_KEY="/root/signing/signing_key.pem"
-export IPS_SIGNING_CERT="/root/signing/signing_cert.pem"
+export IPS_SIGNING_KEY="/root/signing.new/signing_key.pem"
+export IPS_SIGNING_CERT="/root/signing.new/signing_cert.pem"
 export IPS_ROOT_CERT="/root/signing/Thawte_Primary_Root_CA.pem"
 export IPS_INTER_CERT="/root/signing/Thawte_Code_Signing_Certificate.pem"
 export IPS_SIGNING_SERVER="rama.delivery.puppetlabs.net"
@@ -495,11 +508,14 @@ alias java8="export JAVA_HOME=`/usr/libexec/java_home -v 1.8`"
 alias ez_foss_build="EZBAKE_ALLOW_UNREPRODUCIBLE_BUILDS=true EZBAKE_NODEPLOY=true JENKINS_USER_AUTH=\$JENKINS_USER_AUTH_FOSS lein with-profile ezbake ezbake build"
 
 source ~/.sensitive_data
+source ~/.ssh_agent_info
 
-export PATH=$PATH:$(go env GOPATH)/bin
+if which go > /dev/null; then export PATH=$PATH:$(go env GOPATH)/bin; fi
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/morgan/work/releng/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/morgan/work/releng/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/morgan/work/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/morgan/work/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/morgan/work/releng/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/morgan/work/releng/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/Users/morgan/work/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/morgan/work/google-cloud-sdk/completion.zsh.inc'; fi
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+export PATH=/usr/local/Cellar/arm-gcc-bin@8/8-2019-q3-update/bin:/usr/local/Cellar/avr-gcc@8/8.4.0/bin:$PATH

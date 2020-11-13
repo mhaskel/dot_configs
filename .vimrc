@@ -28,9 +28,9 @@ syntax on
 "colorscheme solarized
 "colo Tomorrow
 "set background=light
-let g:hybrid_use_iTerm_colors = 1
-let g:hybrid_reduced_contrast = 1
-colorscheme hybrid
+"let g:hybrid_use_iTerm_colors = 1
+"let g:hybrid_reduced_contrast = 1
+"colorscheme hybrid
 
 
 filetype plugin indent on
